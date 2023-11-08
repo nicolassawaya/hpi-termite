@@ -1,2 +1,2 @@
 # hpi-termite
-HPI Termite
+HPI Termite. Network analysis.
