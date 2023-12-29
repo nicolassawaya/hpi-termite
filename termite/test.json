@@ -1,0 +1,1 @@
+{"directed": false, "multigraph": false, "graph": {}, "nodes": [{"id": 1}, {"id": 2}, {"names": ["ko:K19264"], "type": "ortholog", "id": 20}, {"names": ["ath:AT3G12120", "fvr:FVEG_12065"], "type": "ortholog", "id": 169}], "links": []}

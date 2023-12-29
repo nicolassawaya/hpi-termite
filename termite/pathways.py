@@ -10,6 +10,7 @@ from copy import deepcopy
 
 import networkx as nx
 import itertools
+import json
 
 import re
 
@@ -121,15 +122,17 @@ def get_ortholog_genes_from_keggtext(inpstr):
     strgene = ""
     if match:
         strgene = match.group(1)
+        if len(strgene)>50:
+            strgene = "error_ortholog_texttoolong"
     else:
-        strgene = f"no_match_for_{inpstr}"
+        strgene = "no_match_for_ortholog"
 
     return strgene
 
 
 
 
-def convert_orthologs_to_genes(G):
+def convert_orthologs_to_genes(G,verbose=5):
     '''Convert orthologs to gene list in a pathway graph
     
     Passing by reference (i.e. modifies in-place).
@@ -146,6 +149,8 @@ def convert_orthologs_to_genes(G):
             new_names = []
 
             for name in attr['names']:
+                if verbose>=6:
+                    print("Getting ortholog genes for",name)
                 ko = REST.kegg_get( name ).read()
                 strgene = get_ortholog_genes_from_keggtext(ko)
                 new_names.append(strgene)
@@ -181,14 +186,30 @@ def get_pathway_genes(pathways_graph):
 
 
 
-def save_pathway_nxgraph():
+def save_pathway_graph(G,fname):
     '''Save pathway nxgraph to file'''
-    raise NotImplementedError("TODO: Implement save_pathway_nxgraph")
+
+    # Convert the graph to JSON-compatible dictionary
+    data = nx.node_link_data(G)
+
+    # Dump the dictionary to a JSON file
+    with open(fname, 'w') as f:
+        json.dump(data, f)
 
 
-def load_pathway_nxgraph():
+def load_pathway_graph(fname):
     '''Load pathway nxgraph from file'''
-    raise NotImplementedError("TODO: Implement load_pathway_nxgraph")
+    
+    # Load the JSON data from the file
+    with open(fname, 'r') as f:
+        data = json.load(f)
+
+    # Create a NetworkX graph from the JSON data
+    G = nx.node_link_graph(data)
+
+    return G
+    
+
 
 """
     # https://www.kegg.jp/kegg/xml/docs/

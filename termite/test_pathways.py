@@ -5,7 +5,7 @@ from Bio.KEGG import REST
 
 from . import pathways
 
-
+import os
 
 
 def test_hsv1():
@@ -140,14 +140,32 @@ def test_get_pathway_genes():
 
 
 
+def test_saving_loading():
+    '''Test saving pathway graph'''
 
+    G = nx.Graph()
+    G.add_node(1)
+    G.add_node(2)
+    node_dict = {'names':("ko:K19264",), 'type':"ortholog"}
+    G.add_node(20, **node_dict)
+    node_dict = { 'names':('ath:AT3G12120', 'fvr:FVEG_12065'), 'type':"ortholog"}
+    G.add_node(169, **node_dict)
 
-
+    fname = "test.json"
     
+    pathways.save_pathway_graph(G, fname)
 
 
+    Gloaded = pathways.load_pathway_graph(fname)
+    assert Gloaded.nodes[169]['names']==['ath:AT3G12120', 'fvr:FVEG_12065']
+    # print("Gloaded: ",Gloaded)
+    # for node in Gloaded.nodes():
+    #     print(node)
+    #     print(Gloaded.nodes[node])
 
 
+    # # Remove test file
+    # os.remove(fname)
 
 
     
